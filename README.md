@@ -33,8 +33,9 @@ scram b -j8
 
 to make plots make a folder in data 
 ```
-mkdir Analysis/MonoHlimits/data/Early2017
+mkdir Analysis/MonoHlimits/data/2017Early
 #cp datacards to Early2017 folder name as desired. 
+# file expects xtt_et_inputs-13TeV-mt.root  xtt_mt_inputs-13TeV-mt.root  xtt_tt_inputs-13TeV-mt.root
 ```
 
 
