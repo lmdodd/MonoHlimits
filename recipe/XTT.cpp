@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
   //! [part1]
   // First define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
-  string aux_shapes = string(getenv("CMSSW_BASE")) + "/src/UWAnalysis/StatTools/data/2017Early/";
+  string aux_shapes = string(getenv("CMSSW_BASE")) + "/src/Analysis/MonoHlimit/data/2017Early/";
   string input_dir =
       string(getenv("CMSSW_BASE")) + "/src/CombineHarvester/CombineTools/input";
 
