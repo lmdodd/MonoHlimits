@@ -46,3 +46,11 @@ source runBaryonic.sh
 source run2HDM.sh 
 ``` 
 
+
+To Produce plots in a new CMSSW release 
+```
+cmsrel CMSSW_9_0_0_pre4
+cd  CMSSW_9_0_0_pre4/src/
+cmsenv
+wget 
+```
