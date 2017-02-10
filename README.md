@@ -33,21 +33,14 @@ scram b -j8
 
 to make plots make a folder in data 
 ```
-cd Analysis/MonoHlimits/data
-cd monohlimits
-./makeMuTauPlots
-root -l -b -q makeTemplatePlotsMuTau.C #check the output directory here 
+mkdir Analysis/MonoHlimits/data/Early2017
+#cp datacards to Early2017 folder name as desired. 
 ```
 
 
-to run limit example: remember to change 'aux_shapes' in cpp file. works for XTT <-> HTT
+To produce limits:
 ```
-(remember to change the aux shapes directory in HTT)
-HTT 
-cd output/htt_cards
-combineTool.py -M T2W -i {cmb,et,mt}/* -o workspace.root --parallel 4
-nohup combineTool.py -M Asymptotic -d */*/workspace.root --there -n .limit --parallel 4 &
-combineTool.py -M CollectLimits */*/*.limit.* --use-dirs -o limits.json
+source runBaryonic.sh
+source run2HDM.sh 
+``` 
 
-plotLimits.py limits_{et,mt,cmb}.json:exp0 --auto-style --logy # will plot the expected limit comparisons of the channels
-```
