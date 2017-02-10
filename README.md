@@ -40,6 +40,7 @@ mkdir Analysis/MonoHlimits/data/Early2017
 
 To produce limits:
 ```
+cd Analysis/MonoHlimits/
 source runBaryonic.sh
 source run2HDM.sh 
 ``` 
