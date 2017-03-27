@@ -66,21 +66,11 @@ int main(int argc, char** argv) {
   // ch::Categories is just a typedef of vector<pair<int, string>>
   //! [part1]
   map<string, VString> bkg_procs;
-  bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VV","ZVV","SMH","EWK"};
-  bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VV","ZVV","SMH","EWK"};
-  bkg_procs["tt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VV","ZVV","SMH","EWK"};
+  bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
+  bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
+  bkg_procs["tt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
 
   map<string, Categories> cats;
-  /*cats["et"] = {
-    {1, "et_low"},
-    {2, "et_high"}};
-    cats["mt"] = {
-    {1, "mt_low"},
-    {2, "mt_high"}};
-    cats["tt"] = {
-    {1, "tt_low"},
-    {2, "tt_high"}};
-    */
   cats["et"] = {
       {1, "et_inclusive"}};
   cats["mt"] = {
@@ -111,8 +101,6 @@ int main(int argc, char** argv) {
 
   //! [part4]
 
-  //! [part4]
-
 
   //Some of the code for this is in a nested namespace, so
   // we'll make some using declarations first to simplify things a bit.
@@ -125,30 +113,36 @@ int main(int argc, char** argv) {
 
   //! [part6]
 
-  cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "W", "ZL", "ZJ", "TTT","TTJ", "VV","ZVV","SMH","EWK"} }))
-      .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.062));
+  cb.cp().process(sig_proc)
+      .AddSyst(cb, "CMS_remormalization", "lnN", SystMap<>::init(1.04));
+
+  cb.cp().process(sig_proc)
+      .AddSyst(cb, "CMS_PDF", "lnN", SystMap<>::init(1.02)); //THIS IS GUESS! 
+
+  cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "W", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH","EWK"} }))
+      .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.027));
 
   //TES uncorrelated for now.. potentially correlate
-  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","EWK","VV","SMH"}}))
+  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
       .AddSyst(cb, "CMS_scale_t_tt_$ERA", "shape", SystMap<>::init(1.00));
-  cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","EWK","VV","SMH"}}))
+  cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
       .AddSyst(cb, "CMS_scale_t_mt_$ERA", "shape", SystMap<>::init(1.00));
-  cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","EWK","VV","SMH"}}))
+  cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
       .AddSyst(cb, "CMS_scale_t_et_$ERA", "shape", SystMap<>::init(1.00));
 
-  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
       .AddSyst(cb, "CMS_scale_m_tt_$ERA", "shape", SystMap<>::init(1.00));
-  cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+  cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
       .AddSyst(cb, "CMS_scale_m_mt_$ERA", "shape", SystMap<>::init(1.00));
-  cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+  cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
       .AddSyst(cb, "CMS_scale_m_et_$ERA", "shape", SystMap<>::init(1.00));
 
-  //cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV"}}))
-  //    .AddSyst(cb, "CMS_scale_j_tt_$ERA", "shape", SystMap<>::init(1.00));
-  //cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV"}}))
-  //    .AddSyst(cb, "CMS_scale_j_mt_$ERA", "shape", SystMap<>::init(1.00));
-  //cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","ZVV"}}))
-  //    .AddSyst(cb, "CMS_scale_j_et_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+      .AddSyst(cb, "CMS_scale_j_tt_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+      .AddSyst(cb, "CMS_scale_j_mt_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
+      .AddSyst(cb, "CMS_scale_j_et_$ERA", "shape", SystMap<>::init(1.00));
 
 
 
@@ -156,18 +150,21 @@ int main(int argc, char** argv) {
 
 
   cb.cp().AddSyst(cb, "CMS_eff_m", "lnN", SystMap<channel, process>::init
-          ({"mt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","EWK"}}),  1.02));
+          ({"mt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","EWK"}}),  1.02));
 
   cb.cp().AddSyst(cb, "CMS_eff_e", "lnN", SystMap<channel, process>::init
-          ({"et"}, ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "ZL", "ZJ","W","SMH","EWK"}}),  1.02));
+          ({"et"}, ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","EWK"}}),  1.02));
 
   cb.cp().AddSyst(cb, "CMS_eff_t", "lnN", SystMap<channel, process>::init
-          ({"et","mt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VV", "SMH","EWK"}}),  1.05));
+          ({"et","mt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}),  1.05));
 
   cb.cp().AddSyst(cb, "CMS_eff_t", "lnN", SystMap<channel, process>::init
-          ({"tt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT", "VV", "SMH","EWK"}}),  1.1));
+          ({"tt"}, ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}),  1.1));
 
-
+//Drell Yan  uncertainties
+  cb.cp().process({"ZTT", "ZL", "ZJ"}).AddSyst(cb,
+          "CMS_xtt_zjXsec_13TeV", "lnN", SystMap<>::init(1.03));
+ 
 
   //Drell Yan  uncertainties
   cb.cp().process({"ZTT", "ZL", "ZJ"}).AddSyst(cb,
@@ -189,6 +186,11 @@ int main(int argc, char** argv) {
   //Fake Tau Uncertainties
   cb.cp().process( {"TTJ","W","ZJ"}).channel({"tt","mt","et"}).AddSyst(cb,
           "CMS_xtt_jetToTauFake_$ERA", "shape", SystMap<>::init(1.00));
+
+  //Fake Tau Uncertainties
+  cb.cp().process( {"ZTT","VVT","SMH","TTT"}).channel({"tt","mt","et"}).AddSyst(cb,
+          "CMS_xtt_highTauEffi_$ERA", "shape", SystMap<>::init(1.00));
+
 
   // W norm, just for em and tt where MC norm is from MC
   cb.cp().process({"W"})
@@ -212,10 +214,10 @@ int main(int argc, char** argv) {
 
   //QCD uncertainties
   cb.cp().process({"QCD"})
-      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.3));
+      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.35));
 
   // Diboson - fully correlated
-  cb.cp().process({"VV"}).AddSyst(cb,
+  cb.cp().process({"VVT","VVJ"}).AddSyst(cb,
           "CMS_xtt_vvXsec_13TeV", "lnN", SystMap<>::init(1.05));
 
 
