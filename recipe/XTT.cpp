@@ -113,10 +113,10 @@ int main(int argc, char** argv) {
 
   //! [part6]
 
-  cb.cp().process(sig_proc)
+  cb.cp().process(sig_procs)
       .AddSyst(cb, "CMS_remormalization", "lnN", SystMap<>::init(1.04));
 
-  cb.cp().process(sig_proc)
+  cb.cp().process(sig_procs)
       .AddSyst(cb, "CMS_PDF", "lnN", SystMap<>::init(1.02)); //THIS IS GUESS! 
 
   cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "W", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH","EWK"} }))
@@ -253,14 +253,13 @@ int main(int argc, char** argv) {
 
 
   //! [part8]
-  /*
   auto bbb = ch::BinByBinFactory()
       .SetAddThreshold(0.1)
       .SetMergeThreshold(0.5)
       .SetFixNorm(true);
   bbb.MergeBinErrors(cb.cp().backgrounds());
   bbb.AddBinByBin(cb.cp().backgrounds(), cb);
-*/
+
   // This function modifies every entry to have a standardised bin name of
   // the form: {analysis}_{channel}_{bin_id}_{era}
   // which is commonly used in the xtt analyses
