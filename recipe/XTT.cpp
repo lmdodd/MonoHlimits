@@ -56,7 +56,6 @@ int main(int argc, char** argv) {
   // cb.SetVerbosity(3);
   VString chns =
   {"mt","et","tt"};
-  //{"et"};
 
 
   // Each entry in the vector below specifies a bin name and corresponding bin_id.
@@ -131,6 +130,16 @@ int main(int argc, char** argv) {
   cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
       .AddSyst(cb, "CMS_scale_t_et_$ERA", "shape", SystMap<>::init(1.00));
 
+  //diTau trigger turn on efficiency
+  //cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
+  cb.cp().channel({"tt"}).process(ch::JoinStr({{"ZTT","TTT"}}))
+      .AddSyst(cb, "CMS_xtt_tt_trigger_$ERA", "shape", SystMap<>::init(1.00));
+
+  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
+            .AddSyst(cb, "CMS_trigger_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.035));
+
+
+
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
       .AddSyst(cb, "CMS_scale_m_tt_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
@@ -184,13 +193,6 @@ int main(int argc, char** argv) {
             .AddSyst(cb, "CMS_fake_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
   cb.cp().channel({"tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
             .AddSyst(cb, "CMS_fake_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
-
-
-  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
-            .AddSyst(cb, "CMS_trigger_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.07));
-
-  cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
-            .AddSyst(cb, "CMS_trigger_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.035));
 
 
 
@@ -267,8 +269,7 @@ int main(int argc, char** argv) {
 
   for (string chn : chns) {
       string file = aux_shapes + "xtt_" + chn +
-          //".inputs-13TeV-mt.root";
-          ".inputs-13TeV-mt_phil.root";
+          ".inputs-13TeV-mt.root";
       //".inputs-13TeV-met.root";
       cb.cp().channel({chn}).backgrounds().ExtractShapes(
               file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
