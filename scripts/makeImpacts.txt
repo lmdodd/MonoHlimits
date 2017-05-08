@@ -1,3 +1,4 @@
+#!bin/bash
 #example commands to run impact plots, any signal directory is ok. 
 
 combineTool.py -M Impacts -d Zprime1200A400/cmb/400/workspace.root -m 400 --doInitialFit --rMin -2 --rMax 2 --robustFit 1 -t -1 --expectSignal=1  --parallel 8
