@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
       .AddSyst(cb, "CMS_PDF", "lnN", SystMap<>::init(1.02)); //THIS IS GUESS! 
 
   cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "W", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH","EWK"} }))
-      .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.026));
+      .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.025));
 
   //TES uncorrelated for now.. potentially correlate
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
@@ -239,27 +239,32 @@ int main(int argc, char** argv) {
   cb.cp().process({"W"})
       .AddSyst(cb, "CMS_xtt_wShape_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().process({"W"})
-      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.02));
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.05));
 
   cb.cp().process({"TTT","TTJ"})
       .AddSyst(cb, "CMS_xtt_ttbarShape_$ERA", "shape", SystMap<>::init(1.00));
  
   //Top pt uncertainties 
-  cb.cp().process({"TTT","TTJ"})
-      .AddSyst(cb, "CMS_norm_TT_btag", "lnN", SystMap<>::init(1.12));
+  cb.cp().process({"TTT","TTJ","VVJ","VVL"})
+      .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.04));
+  cb.cp().process({"VVJ","VVL"})
+      .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.02));
+  cb.cp().process(ch::JoinStr({sig_procs, {"QCD", "ZL", "ZJ","ZVV","EWK","W"}}))
+      .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.02));
+  cb.cp().process({"SMH", "ZL", "ZJ","ZVV","EWK"})
+      .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.05));
 
-  //cb.cp().AddSyst(cb, "CMS_top_ptreweighting", "lnN", SystMap<channel, process>::init
-  //        ({"mt","et"}, ch::JoinStr({ {"TTT", "TTJ"}}),  1.05));
-
-  //cb.cp().AddSyst(cb, "CMS_top_ptreweighting", "lnN", SystMap<channel, process>::init
-  //        ({"tt"}, ch::JoinStr({ {"TTT", "TTJ"}}),  1.07));
   // TTBAR   - fully correlated
   cb.cp().process({"TTT","TTJ"}).AddSyst(cb,
           "CMS_xtt_tjXsec_13TeV", "lnN", SystMap<>::init(1.06));
 
   //QCD uncertainties
-  cb.cp().process({"QCD"})
-      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.35));
+  cb.cp().process({"QCD"}).channel({"mt"})
+      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.62));
+  cb.cp().process({"QCD"}).channel({"et","tt"})
+      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.15));
+
+
 
   // Diboson - fully correlated
   cb.cp().process({"VVT","VVJ"}).AddSyst(cb,
@@ -299,8 +304,8 @@ int main(int argc, char** argv) {
 
   //! [part8]
   auto bbb = ch::BinByBinFactory()
-      .SetAddThreshold(0.1)
-      .SetMergeThreshold(0.5)
+      .SetAddThreshold(0.1) //0.03
+      .SetMergeThreshold(0.5) //0.8
       .SetFixNorm(true);
   bbb.MergeBinErrors(cb.cp().backgrounds());
   bbb.AddBinByBin(cb.cp().backgrounds(), cb);
