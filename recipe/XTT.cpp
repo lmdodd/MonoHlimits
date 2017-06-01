@@ -124,11 +124,11 @@ int main(int argc, char** argv) {
 
   //TES uncorrelated for now.. potentially correlate
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-      .AddSyst(cb, "CMS_scale_t_tt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-      .AddSyst(cb, "CMS_scale_t_mt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-      .AddSyst(cb, "CMS_scale_t_et_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
 
   //diTau trigger turn on efficiency
   //cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
@@ -141,18 +141,18 @@ int main(int argc, char** argv) {
 
 
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_m_tt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_m_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_m_mt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_m_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_m_et_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_m_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_j_tt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_j_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_j_mt_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_j_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV","EWK"}}))
-      .AddSyst(cb, "CMS_scale_j_et_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_j_$ERA", "shape", SystMap<>::init(1.00));
 
 
 
@@ -180,19 +180,19 @@ int main(int argc, char** argv) {
 
 
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
-            .AddSyst(cb, "CMS_eff_t_$ERA", "lnN", SystMap<>::init(1.09));
+            .AddSyst(cb, "CMS_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.09));
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
-            .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.04));
+            .AddSyst(cb, "CMS_eff_t_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.04));
 
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
-            .AddSyst(cb, "CMS_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
+            .AddSyst(cb, "CMS_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.045));
   cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
-            .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
+            .AddSyst(cb, "CMS_eff_t_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
   cb.cp().channel({"tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
-            .AddSyst(cb, "CMS_fake_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
+            .AddSyst(cb, "CMS_fake_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.045));
   cb.cp().channel({"tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV","EWK"}}))
-            .AddSyst(cb, "CMS_fake_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
+            .AddSyst(cb, "CMS_fake_eff_t_tt_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
 
 
@@ -238,8 +238,12 @@ int main(int argc, char** argv) {
   // W norm, just for em and tt where MC norm is from MC
   cb.cp().process({"W"})
       .AddSyst(cb, "CMS_xtt_wShape_$ERA", "shape", SystMap<>::init(1.00));
-  cb.cp().process({"W"})
-      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.05));
+  cb.cp().process({"W"}).channel({"tt"})
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.02));
+  cb.cp().process({"W"}).channel({"et"})
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.22));
+  cb.cp().process({"W"}).channel({"mt"})
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.15));
 
   cb.cp().process({"TTT","TTJ"})
       .AddSyst(cb, "CMS_xtt_ttbarShape_$ERA", "shape", SystMap<>::init(1.00));
