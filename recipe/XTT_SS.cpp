@@ -244,7 +244,7 @@ int main(int argc, char** argv) {
   for (string chn : chns) {
       string file = aux_shapes + "xtt_" + chn +
           //".inputs-13TeV-mt.root";
-          ".inputs-13TeV_phil-mt-SS.root";
+          ".inputs-13TeV-mt_phil-SS.root";
       //".inputs-13TeV-met.root";
       cb.cp().channel({chn}).backgrounds().ExtractShapes(
               file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");

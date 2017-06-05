@@ -226,9 +226,9 @@ int main(int argc, char** argv) {
   cb.cp().process({"W"}).channel({"tt"})
       .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.02));
   cb.cp().process({"W"}).channel({"et"})
-      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.22));
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.14));
   cb.cp().process({"W"}).channel({"mt"})
-      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.15));
+      .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.13));
 
   cb.cp().process({"TTT","TTJ"})
       .AddSyst(cb, "CMS_xtt_ttbarShape_$ERA", "shape", SystMap<>::init(1.00));
@@ -248,10 +248,13 @@ int main(int argc, char** argv) {
           "CMS_xtt_tjXsec_13TeV", "lnN", SystMap<>::init(1.06));
 
   //QCD uncertainties
+  cb.cp().process({"QCD"}).channel({"et"})
+      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.68));
   cb.cp().process({"QCD"}).channel({"mt"})
-      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.62));
-  cb.cp().process({"QCD"}).channel({"et","tt"})
+      .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.88));
+  cb.cp().process({"QCD"}).channel({"tt"})
       .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.15));
+
 
 
 
