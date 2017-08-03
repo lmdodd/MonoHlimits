@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
     string mass="";
     string signalMass="";
     string model="Zprime";
-    int control_region = 0;
+    int control_region = 1;
 
 
     VString masses;
@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     config.add_options()
         ("mass,m", po::value<string>(&mass)->default_value(mass))
         ("signalMass", po::value<string>(&signalMass)->default_value(signalMass))
-        ("control_region", po::value<int>(&control_region)->default_value(1))
+        //("control_region", po::value<int>(&control_region)->default_value(1))
         ("model", po::value<string>(&model)->default_value(model));
     po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
     po::notify(vm);
@@ -153,14 +153,15 @@ int main(int argc, char** argv) {
                 masses, {"xtt"}, {"13TeV"}, {chn}, sig_procs, cats[chn], true);
     }
 
-    if (control_region > 0){
-        cb.AddProcesses(   {"*"}, {"htt"}, {"13TeV"}, {"et"}, {"W"}, {{1, "et_inclusive"},
+    /*if (control_region > 0){
+        cb.AddProcesses(   {"*"}, {"xtt"}, {"13TeV"}, {"et"}, {"W"}, {{1, "et_inclusive"},
                 {10, "et_W_inclusive_cr"},
                 {11, "et_QCD_inclusive_cr"}}, false);
-        cb.AddProcesses(   {"*"}, {"htt"}, {"13TeV"}, {"mt"}, {"W"}, {{1, "mt_inclusive"},
+        cb.AddProcesses(   {"*"}, {"xtt"}, {"13TeV"}, {"mt"}, {"W"}, {{1, "mt_inclusive"},
                 {10, "mt_W_inclusive_cr"},
                 {11, "mt_QCD_inclusive_cr"}}, false);
     }
+    */
     //! [part4]
     if ((control_region > 0) ){
         // Since we now account for QCD in the high mT region we only
@@ -362,6 +363,10 @@ int main(int argc, char** argv) {
 
         cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+        //uncomment me for QCD in W CR 
+        cb.cp().bin({"mt_W_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
+        cb.cp().bin({"et_W_inclusive","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+
 
         /////////////////
         // Systematics //
@@ -438,5 +443,17 @@ int main(int argc, char** argv) {
     //    writer.WriteCards("output/xtt_cards/" + chn, cb.cp().channel({chn}));
     //}
 
+    if (control_region > 0){
 
+        for (auto chn : chns) {
+
+            if (ch::contains({"et", "mt"}, chn)) {
+
+
+                cb.cp().channel({chn}).bin_id({10}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_10_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input"+chn+"_10.root");
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+"/xtt_input"+chn+"_11.root");
+
+            } // end et mt
+        } // end CR
     }
+}
