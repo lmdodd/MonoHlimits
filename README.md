@@ -10,7 +10,7 @@ git cms-init
 git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester #combine harvester integration is underway 
 mkdir Analysis
-git clone git@github.com:lmdodd/MonoHlimits.git Analysis/MonoHlimits 
+git clone git@github.com:gfunk723/MonoHlimits.git Analysis/MonoHlimits 
 ```
 
 Combine hard to set up. Always make a clean build, as scram doesn't always see updates to src/LinkDef.h. See https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideHiggsAnalysisCombinedLimit for more
