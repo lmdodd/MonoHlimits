@@ -132,6 +132,15 @@ int main(int argc, char** argv) {
 
                 cats[chn].insert(cats[chn].end(),queue.begin(),queue.end());
             }
+            if (ch::contains({"tt"}, chn)) {
+
+                Categories queue;
+                int binid = 11;
+
+                queue.push_back(make_pair(binid,chn+"_QCD_inclusive_cr"));
+
+                cats[chn].insert(cats[chn].end(),queue.begin(),queue.end());
+            }
         }
     } // end CR et mt > 0
 
@@ -363,6 +372,7 @@ int main(int argc, char** argv) {
 
         cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+        cb.cp().bin({"tt_inclusive","tt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_tt", "rateParam", SystMap<>::init(1.0));
         //uncomment me for QCD in W CR 
         cb.cp().bin({"mt_W_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_W_inclusive","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));

@@ -1,4 +1,5 @@
 <bin file="XTT.cpp" name="XTT"></bin>
+<bin file="XTT_CR.cpp" name="XTT_CR"></bin>
 <bin file="XTT_SS.cpp" name="XTT_SS"></bin>
 <bin file="XTT_LowMt.cpp" name="XTT_LowMt"></bin>
 <bin file="Example1.cpp" name="Example1"></bin>
