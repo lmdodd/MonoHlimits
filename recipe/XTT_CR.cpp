@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
     // ch::Categories is just a typedef of vector<pair<int, string>>
     //! [part1]
     map<string, VString> bkg_procs;
-    bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
-    bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
+    bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","SMH","EWK"};
+    bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","SMH","EWK"};
     bkg_procs["tt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH","EWK"};
 
     map<string, Categories> cats;
