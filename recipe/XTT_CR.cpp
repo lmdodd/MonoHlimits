@@ -162,15 +162,6 @@ int main(int argc, char** argv) {
                 masses, {"xtt"}, {"13TeV"}, {chn}, sig_procs, cats[chn], true);
     }
 
-    /*if (control_region > 0){
-      cb.AddProcesses(   {"*"}, {"xtt"}, {"13TeV"}, {"et"}, {"W"}, {{1, "et_inclusive"},
-      {10, "et_W_inclusive_cr"},
-      {11, "et_QCD_inclusive_cr"}}, false);
-      cb.AddProcesses(   {"*"}, {"xtt"}, {"13TeV"}, {"mt"}, {"W"}, {{1, "mt_inclusive"},
-      {10, "mt_W_inclusive_cr"},
-      {11, "mt_QCD_inclusive_cr"}}, false);
-      }
-      */
 
     //! [part4]
     if ((control_region > 0) ){
@@ -272,11 +263,6 @@ int main(int argc, char** argv) {
     //Drell Yan  uncertainties
     cb.cp().process({"ZTT", "ZL", "ZJ"}).AddSyst(cb,
             "CMS_xtt_zjXsec_13TeV", "lnN", SystMap<>::init(1.03));
-
-
-    //Drell Yan  uncertainties
-    cb.cp().process({"ZTT", "ZL", "ZJ"}).AddSyst(cb,
-            "CMS_xtt_zjXsec_13TeV", "lnN", SystMap<>::init(1.03));
     cb.cp().process({"ZTT","ZL","ZJ"})
         .AddSyst(cb, "CMS_xtt_dyShape_$ERA", "shape", SystMap<>::init(0.1)); //10% was input
     //.AddSyst(cb, "CMS_xtt_dyShape_$ERA", "shape", SystMap<>::init(1.00));
@@ -293,7 +279,7 @@ int main(int argc, char** argv) {
 
 
     //Fake Tau Uncertainties
-    cb.cp().process( {"TTJ","W","ZJ"}).channel({"tt","mt","et"}).AddSyst(cb,
+    cb.cp().process( {"VVJ","TTJ","W","ZJ"}).channel({"tt","mt","et"}).AddSyst(cb,
             "CMS_xtt_jetToTauFake_$ERA", "shape", SystMap<>::init(1.00));
 
     //Fake Tau Uncertainties
@@ -376,6 +362,7 @@ int main(int argc, char** argv) {
 
         cb.cp().bin({"mt_inclusive","mt_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+        //do I want this?
         cb.cp().bin({"mt_QCD_inclusive_cr","mt_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_QCD_inclusive_cr","et_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
 
@@ -411,21 +398,41 @@ int main(int argc, char** argv) {
     cout << ">> Scaling signal process rates...\n";
     map<string, TGraph> xs;
 
-    for (string const& p : sig_procs) {
-        // Get the table of xsecs vs mass for process "p" and era "e":
-        cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
-        cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
-                std::string mass = proc->mass(); 
-                int n = std::stoi(signalMass);
-                int m = std::stoi(mass);
-                cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
-                xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
-                proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(m));
-                cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
-                cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
-                //proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(300));
-                });
+    if (model=="Zprime"){ //Do not scale baryonci yet 
+        for (string const& p : sig_procs) {
+            // Get the table of xsecs vs mass for process "p" and era "e":
+            cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
+            cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
+                    std::string mass = proc->mass(); 
+                    int n = std::stoi(signalMass);
+                    int m = std::stoi(mass);
+                    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
+                    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
+                    proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(m));
+                    cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
+                    cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
+                    //proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(300));
+                    });
+        }
     }
+    /*else if (model=="Baryonic"){ //Do not scale baryonci yet 
+        for (string const& p : sig_procs) {
+            // Get the table of xsecs vs mass for process "p" and era "e":
+            cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
+            cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
+                    std::string mass = proc->mass(); 
+                    int n = std::stoi(signalMass);
+                    int m = std::stoi(mass);
+                    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
+                    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
+                    proc->set_rate(1000000000*proc->rate() * xs["xtt"+mass].Eval(m));
+                    cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
+                    cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
+                    //proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(300));
+                    });
+        }
+    }*/
+
 
 
 
@@ -438,11 +445,11 @@ int main(int argc, char** argv) {
     bbb.AddBinByBin(cb.cp().backgrounds(), cb);
 
     auto bbb_ctl = ch::BinByBinFactory()
-    .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
-    .SetAddThreshold(0.)
-    .SetMergeThreshold(0.8)
-    .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here
-    .SetVerbosity(1);
+        .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
+        .SetAddThreshold(0.)
+        .SetMergeThreshold(0.8)
+        .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here
+        .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
     bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
     bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion), cb);
@@ -467,11 +474,7 @@ int main(int argc, char** argv) {
     ch::CardWriter writer("$TAG/$MASS/$ANALYSIS_$CHANNEL_$BINID_$ERA.txt",
             "$TAG/$MASS/$ANALYSIS_$CHANNEL.input_$ERA.root");
     writer.SetVerbosity(1);
-    //writer.WriteCards("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb", cb);
     writer.WriteCards("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb", cb);
-    //for (auto chn : cb.channel_set()) {
-    //    writer.WriteCards("output/xtt_cards/" + chn, cb.cp().channel({chn}));
-    //}
 
     if (control_region > 0){
 
@@ -480,12 +483,15 @@ int main(int argc, char** argv) {
             if (ch::contains({"et", "mt"}, chn)) {
 
 
-                cb.cp().channel({chn}).bin_id({10}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_10_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input"+chn+"_10.root");
-                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+"/xtt_input"+chn+"_11.root");
+                cb.cp().channel({chn}).bin_id({1}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_1_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_1.root");
+                cb.cp().channel({chn}).bin_id({10}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_10_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_10.root");
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+"/xtt_input_"+chn+"_11.root");
 
             } // end et mt
             if (ch::contains({"tt"}, chn)) {
-                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input"+chn+"_11.root");
+
+                cb.cp().channel({chn}).bin_id({1}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_1_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_1.root");
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_11.root");
             }
         } // end CR
     }
