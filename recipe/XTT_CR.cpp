@@ -99,9 +99,9 @@ int main(int argc, char** argv) {
     // ch::Categories is just a typedef of vector<pair<int, string>>
     //! [part1]
     map<string, VString> bkg_procs;
-    bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","SMH"};
-    bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","SMH"};
-    bkg_procs["tt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TTT","TTJ", "VVT","VVJ","ZVV","SMH"};
+    bkg_procs["et"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
+    bkg_procs["mt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
+    bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","ZVV","SMH"};
 
     map<string, Categories> cats;
     cats["et"] = {
@@ -291,11 +291,9 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_xtt_wShape_$ERA", "shape", SystMap<>::init(1.00));
     // W norm, just for tt where MC norm is from MC
     cb.cp().process({"W"}).channel({"tt"})
-        .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.02));
-    //cb.cp().process({"W"}).channel({"et"})
-    //    .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.14));
-    //cb.cp().process({"W"}).channel({"mt"})
-    //    .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.13));
+        .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.15));
+    cb.cp().process({"W"}).channel({"mt","et"})
+        .AddSyst(cb, "CMS_norm_W_antiisoextrap", "lnN", SystMap<>::init(1.20));
 
     cb.cp().process({"TTT","TTJ"})
         .AddSyst(cb, "CMS_xtt_ttbarShape_$ERA", "shape", SystMap<>::init(1.00));
@@ -308,7 +306,7 @@ int main(int argc, char** argv) {
 
 
     //Top pt uncertainties 
-    cb.cp().process({"TTT","TTJ","VVJ","VVL"})
+    cb.cp().process({"TTT","TTJ"})
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.04));
     cb.cp().process({"VVJ","VVL"})
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.02));
@@ -368,6 +366,7 @@ int main(int argc, char** argv) {
 
         cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+
         cb.cp().bin({"tt_inclusive","tt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_tt", "rateParam", SystMap<>::init(1.0));
         //uncomment me for QCD in W CR 
         cb.cp().bin({"mt_W_inclusive","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
@@ -440,19 +439,24 @@ int main(int argc, char** argv) {
     auto bbb = ch::BinByBinFactory()
         .SetAddThreshold(0.05) //0.1
         .SetMergeThreshold(0.8) //0.5
-        .SetFixNorm(false);
-    bbb.MergeBinErrors(cb.cp().backgrounds());
-    bbb.AddBinByBin(cb.cp().backgrounds(), cb);
+        .SetFixNorm(false)
+        .SetVerbosity(1);
+    bbb.MergeBinErrors(cb.cp().backgrounds().FilterProcs(BinIsControlRegion));
+    bbb.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsControlRegion), cb);
 
     auto bbb_ctl = ch::BinByBinFactory()
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
-        .SetAddThreshold(0.)
+        .SetAddThreshold(0.05)
         .SetMergeThreshold(0.8)
         .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
+    //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
+    //bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion), cb);
     bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
-    bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion), cb);
+    bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion),cb);
+    //bbb_ctl.AddBinByBin(cb.cp().process(cb.cp().process().FilterProcs(BinIsNotControlRegion), cb);
+    //bbb_ctl.AddBinByBin(cb.cp().backgrounds(), cb);
     cout << " done\n";
 
     // This function modifies every entry to have a standardised bin name of
