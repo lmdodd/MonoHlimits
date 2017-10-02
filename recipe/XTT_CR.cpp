@@ -167,16 +167,6 @@ int main(int argc, char** argv) {
     }
 
 
-    //! [part4]
-    if ((control_region > 0) ){
-        // Since we now account for QCD in the high mT region we only
-        // need to filter signal processes
-        cb.FilterAll([](ch::Object const* obj) {
-                return (BinIsControlRegion(obj) && obj->signal());
-                });
-    }
-
-
     //Some of the code for this is in a nested namespace, so
     // we'll make some using declarations first to simplify things a bit.
     using ch::syst::SystMap;
@@ -185,6 +175,17 @@ int main(int argc, char** argv) {
     using ch::syst::bin_id;
     using ch::syst::process;
 
+
+
+    //! [part4]
+    if ((control_region > 0) ){
+        // Since we now account for QCD in the high mT region we only
+        // need to filter signal processes
+        cb.FilterAll([](ch::Object const* obj) {
+                return (BinIsControlRegion(obj) && obj->signal());
+                });
+                //
+    }
 
     //! [part6]
 
@@ -424,24 +425,33 @@ int main(int argc, char** argv) {
         }
     }
     /*else if (model=="Baryonic"){ //Do not scale baryonci yet 
-        for (string const& p : sig_procs) {
-            // Get the table of xsecs vs mass for process "p" and era "e":
-            cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
-            cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
-                    std::string mass = proc->mass(); 
-                    int n = std::stoi(signalMass);
-                    int m = std::stoi(mass);
-                    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
-                    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
-                    proc->set_rate(1000000000*proc->rate() * xs["xtt"+mass].Eval(m));
-                    cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
-                    cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
-                    //proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(300));
-                    });
-        }
+      for (string const& p : sig_procs) {
+    // Get the table of xsecs vs mass for process "p" and era "e":
+    cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
+    cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
+    std::string mass = proc->mass(); 
+    int n = std::stoi(signalMass);
+    int m = std::stoi(mass);
+    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
+    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
+    proc->set_rate(1000000000*proc->rate() * xs["xtt"+mass].Eval(m));
+    cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
+    cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
+    //proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(300));
+    });
+    }
     }*/
 
-
+    bool mergeTo1Bin=false;
+    if (mergeTo1Bin){
+        //DOES NOT YET WORK
+        cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>);
+        // Merge to one bin for control region bin
+        //cb.cp().process({"*"},true).FilterProcs(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>)
+        cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>);
+        //cb.cp().FilterAll(BinIsNotControlRegion).ForEachObs(To1Bin<ch::Observation>);
+        //
+    }
 
 
     //! [part8]
@@ -457,7 +467,8 @@ int main(int argc, char** argv) {
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
         .SetAddThreshold(0.05)
         .SetMergeThreshold(0.8)
-        .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
+        .SetFixNorm(true)  // contrary to signal region, bbb *should* change yield here?
+        //.SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
     //bbb_ctl.AddBinByBin(cb.cp().backgrounds(), cb);
