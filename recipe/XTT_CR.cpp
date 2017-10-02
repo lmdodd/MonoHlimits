@@ -89,6 +89,8 @@ int main(int argc, char** argv) {
     // cb.SetVerbosity(3);
     VString chns =
     {"mt","et","tt"};
+    //{"tt"};
+    //{"mt","et"};
 
 
     // Each entry in the vector below specifies a bin name and corresponding bin_id.
@@ -99,9 +101,10 @@ int main(int argc, char** argv) {
     // ch::Categories is just a typedef of vector<pair<int, string>>
     //! [part1]
     map<string, VString> bkg_procs;
-    bkg_procs["et"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
-    bkg_procs["mt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
+    bkg_procs["et"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH","ZL","ZJ"};
+    bkg_procs["mt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH","ZL","ZJ"};
     bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","ZVV","SMH"};
+    //bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
 
     map<string, Categories> cats;
     cats["et"] = {
@@ -110,6 +113,7 @@ int main(int argc, char** argv) {
         {1, "mt_inclusive"}};
     cats["tt"] = {
         {1, "tt_inclusive"}};
+    
     //! [part1]
     // Get the table of H->tau tau BRs vs mass
     //! 
@@ -195,11 +199,11 @@ int main(int argc, char** argv) {
 
     //TES uncorrelated for now.. potentially correlate
     cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
+        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(2.00));
     cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
+        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(2.00));
     cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT","TTT","VVT","SMH"}}))
-        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(1.00));
+        .AddSyst(cb, "CMS_scale_t_$ERA", "shape", SystMap<>::init(2.00));
 
 
 
@@ -291,9 +295,11 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_xtt_wShape_$ERA", "shape", SystMap<>::init(1.00));
     // W norm, just for tt where MC norm is from MC
     cb.cp().process({"W"}).channel({"tt"})
-        .AddSyst(cb, "CMS_norm_W", "lnN", SystMap<>::init(1.15));
+        .AddSyst(cb, "CMS_norm_W_$CHANNEL", "lnN", SystMap<>::init(1.10));
+    //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
+    //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1})
     cb.cp().process({"W"}).channel({"mt","et"})
-        .AddSyst(cb, "CMS_norm_W_antiisoextrap", "lnN", SystMap<>::init(1.20));
+        .AddSyst(cb, "CMS_W_Extrap_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.20));
 
     cb.cp().process({"TTT","TTJ"})
         .AddSyst(cb, "CMS_xtt_ttbarShape_$ERA", "shape", SystMap<>::init(1.00));
@@ -310,9 +316,9 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.04));
     cb.cp().process({"VVJ","VVL"})
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.02));
-    cb.cp().process(ch::JoinStr({sig_procs, {"QCD", "ZL", "ZJ","ZVV","W"}}))
+    cb.cp().process(ch::JoinStr({sig_procs, {"QCD","W"}}))
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.02));
-    cb.cp().process({"SMH", "ZL", "ZJ","ZVV"})
+    cb.cp().process({"SMH","ZTT","ZL", "ZJ","ZVV"})
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.05));
 
     // TTBAR   - fully correlated
@@ -324,9 +330,12 @@ int main(int argc, char** argv) {
     //    .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.68));
     //cb.cp().process({"QCD"}).channel({"mt"})
     //    .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.88));
-    cb.cp().process({"QCD"}).channel({"tt","et","mt"})
-        .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.20));
-
+    //cb.cp().process({"QCD"}).channel({"tt"}).bin_id({1})
+    cb.cp().process({"QCD"}).channel({"tt"})
+        .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
+    //cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
+    cb.cp().process({"QCD"}).channel({"et","mt"})
+        .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
 
 
 
@@ -448,15 +457,13 @@ int main(int argc, char** argv) {
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
         .SetAddThreshold(0.05)
         .SetMergeThreshold(0.8)
-        .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here
+        .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
-    //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
-    //bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion), cb);
-    bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
-    bbb_ctl.AddBinByBin(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion),cb);
-    //bbb_ctl.AddBinByBin(cb.cp().process(cb.cp().process().FilterProcs(BinIsNotControlRegion), cb);
     //bbb_ctl.AddBinByBin(cb.cp().backgrounds(), cb);
+    bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotControlRegion), cb);
+    bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
+
     cout << " done\n";
 
     // This function modifies every entry to have a standardised bin name of
