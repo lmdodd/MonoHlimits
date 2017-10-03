@@ -297,8 +297,9 @@ int main(int argc, char** argv) {
     // W norm, just for tt where MC norm is from MC
     cb.cp().process({"W"}).channel({"tt"})
         .AddSyst(cb, "CMS_norm_W_$CHANNEL", "lnN", SystMap<>::init(1.10));
+
+    //cb.cp().process({"W"}).channel({"mt","et"})
     //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
-    //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1})
     cb.cp().process({"W"}).channel({"mt","et"})
         .AddSyst(cb, "CMS_W_Extrap_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.20));
 
@@ -467,8 +468,8 @@ int main(int argc, char** argv) {
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
         .SetAddThreshold(0.05)
         .SetMergeThreshold(0.8)
-        .SetFixNorm(true)  // contrary to signal region, bbb *should* change yield here?
-        //.SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
+        .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
+        //.SetFixNorm(true)  // contrary to signal region, bbb *should* change yield here?
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
     //bbb_ctl.AddBinByBin(cb.cp().backgrounds(), cb);
