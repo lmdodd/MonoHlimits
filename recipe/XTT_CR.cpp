@@ -17,6 +17,9 @@
 #include "CombineHarvester/CombineTools/interface/Utilities.h"
 #include "CombineHarvester/CombineTools/interface/Systematics.h"
 #include "CombineHarvester/CombineTools/interface/BinByBin.h"
+#include "TH2.h"
+#include "TH1.h"
+#include "TF1.h"
 
 using namespace std;
 using boost::starts_with;
@@ -25,16 +28,18 @@ namespace po = boost::program_options;
     template <typename T>
 void To1Bin(T* proc)
 {
+    std::cout<<"Making CR into 1 bin"<<std::endl;
     std::unique_ptr<TH1> originalHist = proc->ClonedScaledShape();
     TH1F *hist = new TH1F("hist","hist",1,0,1);
     double err = 0;
-    double rate =
-        originalHist->IntegralAndError(0, originalHist->GetNbinsX() + 1, err);
+    double rate = originalHist->IntegralAndError(0, originalHist->GetNbinsX() + 1, err);
     hist->SetDirectory(0);
     hist->SetBinContent(1, rate);
     hist->SetBinError(1, err);
     proc->set_shape(*hist, true);  // True means adjust the process rate to the
     // integral of the hist
+    std::cout<<"CR is now one bin!"<<std::endl;
+    std::cout<<"...."<<std::endl;
 }
 
 bool BinIsControlRegion(ch::Object const* obj)
@@ -65,6 +70,7 @@ int main(int argc, char** argv) {
     string signalMass="";
     string model="Zprime";
     int control_region = 1;
+    int do1Bin = 0;
 
 
     VString masses;
@@ -76,7 +82,8 @@ int main(int argc, char** argv) {
     config.add_options()
         ("mass,m", po::value<string>(&mass)->default_value(mass))
         ("signalMass", po::value<string>(&signalMass)->default_value(signalMass))
-        //("control_region", po::value<int>(&control_region)->default_value(1))
+        ("control_region", po::value<int>(&control_region)->default_value(1))
+        ("Do1Bin", po::value<int>(&control_region)->default_value(0))
         ("model", po::value<string>(&model)->default_value(model));
     po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
     po::notify(vm);
@@ -299,8 +306,7 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_norm_W_$CHANNEL", "lnN", SystMap<>::init(1.10));
 
     //cb.cp().process({"W"}).channel({"mt","et"})
-    //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
-    cb.cp().process({"W"}).channel({"mt","et"})
+    cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
         .AddSyst(cb, "CMS_W_Extrap_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.20));
 
     cb.cp().process({"TTT","TTJ"})
@@ -328,15 +334,12 @@ int main(int argc, char** argv) {
             "CMS_xtt_tjXsec_13TeV", "lnN", SystMap<>::init(1.06));
 
     //QCD uncertainties
-    //cb.cp().process({"QCD"}).channel({"et"})
-    //    .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.68));
-    //cb.cp().process({"QCD"}).channel({"mt"})
-    //    .AddSyst(cb, "CMS_QCD_Syst ", "lnN", SystMap<>::init(1.88));
-    //cb.cp().process({"QCD"}).channel({"tt"}).bin_id({1})
-    cb.cp().process({"QCD"}).channel({"tt"})
+       
+    //cb.cp().process({"QCD"}).channel({"tt"})
+    cb.cp().process({"QCD"}).channel({"tt"}).bin_id({1})
         .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
-    //cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
-    cb.cp().process({"QCD"}).channel({"et","mt"})
+    //cb.cp().process({"QCD"}).channel({"et","mt"})
+    cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
         .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
 
 
@@ -443,15 +446,10 @@ int main(int argc, char** argv) {
     }
     }*/
 
-    bool mergeTo1Bin=false;
-    if (mergeTo1Bin){
-        //DOES NOT YET WORK
+    if (do1Bin){
+        //Now works!
         cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>);
-        // Merge to one bin for control region bin
-        //cb.cp().process({"*"},true).FilterProcs(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>)
-        cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>);
-        //cb.cp().FilterAll(BinIsNotControlRegion).ForEachObs(To1Bin<ch::Observation>);
-        //
+        cb.cp().FilterAll(BinIsNotControlRegion).ForEachObs(To1Bin<ch::Observation>);
     }
 
 
