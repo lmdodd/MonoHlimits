@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
         ("mass,m", po::value<string>(&mass)->default_value(mass))
         ("signalMass", po::value<string>(&signalMass)->default_value(signalMass))
         ("control_region", po::value<int>(&control_region)->default_value(1))
-        ("Do1Bin", po::value<int>(&control_region)->default_value(0))
+        ("do1Bin", po::value<int>(&do1Bin)->default_value(0))
         ("model", po::value<string>(&model)->default_value(model));
     po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
     po::notify(vm);
@@ -305,8 +305,8 @@ int main(int argc, char** argv) {
     cb.cp().process({"W"}).channel({"tt"})
         .AddSyst(cb, "CMS_norm_W_$CHANNEL", "lnN", SystMap<>::init(1.10));
 
-    //cb.cp().process({"W"}).channel({"mt","et"})
-    cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
+    //cb.cp().process({"W"}).channel({"mt","et"}).bin_id({1,11})
+    cb.cp().process({"W"}).channel({"mt","et"})
         .AddSyst(cb, "CMS_W_Extrap_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.20));
 
     cb.cp().process({"TTT","TTJ"})
@@ -335,11 +335,11 @@ int main(int argc, char** argv) {
 
     //QCD uncertainties
        
-    //cb.cp().process({"QCD"}).channel({"tt"})
-    cb.cp().process({"QCD"}).channel({"tt"}).bin_id({1})
+    //cb.cp().process({"QCD"}).channel({"tt"}).bin_id({1})
+    cb.cp().process({"QCD"}).channel({"tt"})
         .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
-    //cb.cp().process({"QCD"}).channel({"et","mt"})
-    cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
+    //cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
+    cb.cp().process({"QCD"}).channel({"et","mt"})
         .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
 
 
