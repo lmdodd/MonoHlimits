@@ -43,7 +43,7 @@ void To1Bin(T* proc)
     std::cout<<"...."<<std::endl;
 }
 
-template <typename T>
+    template <typename T>
 void MergeBins(T* proc)
 {
     std::cout<<"Merging bin 12 and bin 13  into 1 bin"<<std::endl;
@@ -122,8 +122,6 @@ int main(int argc, char** argv) {
     // cb.SetVerbosity(3);
     VString chns =
     {"mt","et","tt"};
-    //{"tt"};
-    //{"mt","et"};
 
 
     // Each entry in the vector below specifies a bin name and corresponding bin_id.
@@ -147,16 +145,9 @@ int main(int argc, char** argv) {
     cats["tt"] = {
         {1, "tt_inclusive"}};
 
-    //! [part1]
-    // Get the table of H->tau tau BRs vs mass
-    //! 
-    //Option 1
-    //vector<string> massesA = ch::MassesFromRange("400-800:100");
-
 
     if (control_region > 0){
         // for each channel use the categories >= 10 for the control regions
-        // the control regions are ordered in triples (10,11,12),(13,14,15)...
         for (auto chn : chns){
             // for em or tt or mm do nothing
             if (ch::contains({"mt", "et"}, chn)) {
@@ -228,7 +219,6 @@ int main(int argc, char** argv) {
     cb.cp().process(sig_procs)
         .AddSyst(cb, "CMS_PDF", "lnN", SystMap<>::init(1.02)); 
 
-    //cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "W", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH"} }))
     cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH"} }))
         .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.025));
 
@@ -280,15 +270,13 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
 
-    //cb.cp().channel({"et","mt","tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","W"}}))
-    //    .AddSyst(cb, "CMS_fake_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
-    //cb.cp().channel({"et","mt","tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","W","ZVV"}}))
-    //    .AddSyst(cb, "CMS_fake_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
+    cb.cp().channel({"et","mt","tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ"}}))
+        .AddSyst(cb, "CMS_fake_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
+    cb.cp().channel({"et","mt","tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","ZVV"}}))
+        .AddSyst(cb, "CMS_fake_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
     cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
-        .AddSyst(cb, "CMS_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.1));
-
-
+        .AddSyst(cb, "CMS_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.09));
 
 
     //Fake Tau Effi?
@@ -315,13 +303,11 @@ int main(int argc, char** argv) {
     cb.cp().process( {"ZL"}).channel({"et"}).AddSyst(cb,
             "CMS_xtt_ZLScale_etau_$ERA", "shape", SystMap<>::init(1.00));
 
-
     //Fake Tau Uncertainties
     cb.cp().process( {"VVJ","TTJ","W","ZJ"}).channel({"tt","mt","et"}).AddSyst(cb,
             "CMS_xtt_jetToTauFake_$ERA", "shape", SystMap<>::init(1.00));
 
     //Fake Tau Uncertainties
-    //cb.cp().process(ch::JoinStr({sig_procs, {"ZTT","VVT","SMH","TTT"}).channel({"tt","mt","et"}).AddSyst(cb,
     cb.cp().process({"ZTT","VVT","SMH","TTT"}).channel({"tt","mt","et"}).AddSyst(cb,
             "CMS_xtt_highTauEffi_$ERA", "shape", SystMap<>::init(1.00));
 
@@ -352,8 +338,8 @@ int main(int argc, char** argv) {
     cb.cp().process({"VVJ","VVL"})
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.02));
     cb.cp().process(sig_procs)
-    //cb.cp().process(ch::JoinStr({sig_procs, {"QCD"}}))
-    //cb.cp().process(ch::JoinStr({sig_procs, {"QCD","W"}}))
+        //cb.cp().process(ch::JoinStr({sig_procs, {"QCD"}}))
+        //cb.cp().process(ch::JoinStr({sig_procs, {"QCD","W"}}))
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.02));
     cb.cp().process({"SMH","ZTT","ZL", "ZJ","ZVV"})
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.05));
@@ -370,7 +356,6 @@ int main(int argc, char** argv) {
     //cb.cp().process({"QCD"}).channel({"et","mt"})
     cb.cp().process({"QCD"}).channel({"et","mt"}).bin_id({1,10})
         .AddSyst(cb, "CMS_QCD_$CHANNEL_Syst_$ERA", "lnN", SystMap<>::init(1.20));
-
 
     // Diboson - fully correlated
     cb.cp().process({"VVT","VVJ"}).AddSyst(cb,
@@ -406,7 +391,7 @@ int main(int argc, char** argv) {
         cb.cp().bin({"mt_inclusive","mt_W_inclusive_cr","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_W_inclusive_cr","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
 
-        //cb.cp().bin({"tt_inclusive","tt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_tt", "rateParam", SystMap<>::init(1.0));
+        cb.cp().bin({"tt_inclusive","tt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_tt", "rateParam", SystMap<>::init(1.0));
         //uncomment me for QCD in W CR 
 
 
@@ -487,23 +472,22 @@ int main(int argc, char** argv) {
         //.SetMergeThreshold(0.8) //0.5
         .SetFixNorm(false)
         .SetVerbosity(1);
-    bbb.MergeBinErrors(cb.cp().backgrounds().FilterProcs(BinIsControlRegion));
+    //bbb.MergeBinErrors(cb.cp().backgrounds().FilterProcs(BinIsControlRegion));
     bbb.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsControlRegion), cb);
 
-    if (!do1Bin){
+    /*
     auto bbb_ctl = ch::BinByBinFactory()
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
         .SetAddThreshold(0.05)
-        .SetMergeThreshold(0.8)
+        //.SetMergeThreshold(0.5)
         .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
         //.SetFixNorm(true)  // contrary to signal region, bbb *should* change yield here?
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
-    //bbb_ctl.AddBinByBin(cb.cp().backgrounds(), cb);
-    bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotControlRegion), cb);
-    bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
-    }
+    //bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotControlRegion), cb);
+    //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
     cout << " done\n";
+    */
 
     // This function modifies every entry to have a standardised bin name of
     // the form: {analysis}_{channel}_{bin_id}_{era}
@@ -525,6 +509,9 @@ int main(int argc, char** argv) {
             "$TAG/$MASS/$ANALYSIS_$CHANNEL.input_$ERA.root");
     writer.SetVerbosity(1);
     writer.WriteCards("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb", cb);
+    for (auto chn : chns) {
+        writer.WriteCards("output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn, cb.cp().channel({chn}));
+    }
 
     if (control_region > 0){
 
@@ -532,15 +519,19 @@ int main(int argc, char** argv) {
 
             if (ch::contains({"et", "mt"}, chn)) {
 
-
                 cb.cp().channel({chn}).bin_id({10}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_10_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_10.root");
                 cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+"/xtt_input_"+chn+"_11.root");
 
-            } // end et mt
-            //if (ch::contains({"tt"}, chn)) {
+                cb.cp().channel({chn}).bin_id({10}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+ "/xtt_"+chn+"_10_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+ "/xtt_input_"+chn+"_10.root");
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+"/xtt_input_"+chn+"_11.root");
 
-             //   cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_11.root");
-            //}
+
+
+            } // end et mt
+            if (ch::contains({"tt"}, chn)) {
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/cmb/"+mass+ "/xtt_input_"+chn+"_11.root");
+                cb.cp().channel({chn}).bin_id({11}).mass({"$MASS", "*"}).WriteDatacard("output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+ "/xtt_"+chn+"_11_13TeV.txt", "output/xtt_cards/"+model+signalMass+"A"+mass+"/"+chn+"/"+mass+ "/xtt_input_"+chn+"_11.root");
+            }
         } // end CR
     }
     }
