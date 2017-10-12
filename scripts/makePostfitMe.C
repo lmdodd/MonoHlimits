@@ -142,22 +142,31 @@ void makeLTauStack(TString name,TString file,TString dir,int s,TString labelX,TS
 
     std::cout<<"here 3"<<std::endl;
 	TH1F * ttbar = (TH1F*)(f->Get(dir+"/TTJ"));
-	if(f->Get(dir+"/TTT")!=0)
-    ttbar->Add((TH1F*)(f->Get(dir+"/TTT")));
 	if (dndm) convertToDNDM(ttbar);
 	applyStyle(ttbar,kBlue-8,1,1001);
 
-    std::cout<<"here 4"<<std::endl;
 
-	TH1F * EWK = (TH1F*)(f->Get(dir+"/W"));
-	if (dndm) convertToDNDM(EWK);
-	applyStyle(EWK,kRed-6,1,1001);
+
+    TH1F * ttbarT = 0; 
+    if (f->Get(dir+"/TTT")!=0){
+        ttbarT = (TH1F*)(f->Get(dir+"/TTT"));
+        if (dndm) convertToDNDM(ttbarT);
+        applyStyle(ttbarT,kBlue-8,1,3004);
+    }
+
+    std::cout<<"here 4"<<std::endl;
+    TH1F * EWK = (TH1F*)(f->Get(dir+"/W"));
+    if (dndm) convertToDNDM(EWK);
+    applyStyle(EWK,kRed-6,1,1001);
 
     std::cout<<"here 5"<<std::endl;
-	TH1F * VV = (TH1F*)(f->Get(dir+"/VVJ"));
-    VV->Add((TH1F*)(f->Get(dir+"/VVT")));
-	if (dndm) convertToDNDM(VV);
-	applyStyle(VV,kMagenta+2,1,1001);
+    TH1F * VV = (TH1F*)(f->Get(dir+"/VVJ"));
+    if (dndm) convertToDNDM(VV);
+    applyStyle(VV,kMagenta+2,1,1001);
+
+    TH1F * VVT = (TH1F*)(f->Get(dir+"/VVT"));
+    if (dndm) convertToDNDM(VVT);
+    applyStyle(VVT,kMagenta+2,1,3004);
 
     std::cout<<"here 6"<<std::endl;
     TH1F * ZVV=0;
@@ -177,12 +186,12 @@ void makeLTauStack(TString name,TString file,TString dir,int s,TString labelX,TS
     TH1F * ZEE = 0;
 
     if(channel != "#tau_{h}#tau_{h}"){
-    if(f->Get(dir+"/ZL")!=0&&f->Get(dir+"/ZLL")==0)
-        ZEE=((TH1F*)(f->Get(dir+"/ZL")));
-    if(f->Get(dir+"/ZJ")!=0&&f->Get(dir+"/ZLL")==0)
-        ZEE->Add((TH1F*)(f->Get(dir+"/ZJ")));
-    if (dndm) convertToDNDM(ZEE);
-    applyStyle(ZEE,kAzure-4,1,1001);
+        if(f->Get(dir+"/ZL")!=0&&f->Get(dir+"/ZLL")==0)
+            ZEE=((TH1F*)(f->Get(dir+"/ZL")));
+        if(f->Get(dir+"/ZJ")!=0&&f->Get(dir+"/ZLL")==0)
+            ZEE->Add((TH1F*)(f->Get(dir+"/ZJ")));
+        if (dndm) convertToDNDM(ZEE);
+        applyStyle(ZEE,kAzure-4,1,1001);
     }
 
     TH1F *signalZH=0;
@@ -191,6 +200,7 @@ void makeLTauStack(TString name,TString file,TString dir,int s,TString labelX,TS
     //more signal styles to be added later
     THStack *hs = new THStack("hs","");
     hs->Add(ttbar);
+    hs->Add(ttbarT);
     hs->Add(SMH);
     if(channel == "#tau_{h}#tau_{h}")
         hs->Add(ZVV);
@@ -199,6 +209,7 @@ void makeLTauStack(TString name,TString file,TString dir,int s,TString labelX,TS
     hs->Add(QCD);
     hs->Add(EWK);
     hs->Add(VV);
+    hs->Add(VVT);
     hs->Add(ZTT);
     if(s==3) {
         TH1F * ZH = (TH1F*)(f->Get(dir+"/ZprimeA800Z"));
@@ -366,10 +377,12 @@ void makeLTauStack(TString name,TString file,TString dir,int s,TString labelX,TS
         l->AddEntry(ZEE,"Z#rightarrowll","F");
 
     l->AddEntry(EWK,"W+jets","F");
-    l->AddEntry(VV,"Multiboson/Single Top","F");
+    l->AddEntry(VV,"Multiboson false","F");
+    l->AddEntry(VVT,"Multiboson true","F");
     l->AddEntry(QCD,"QCD/multijet","F");
     l->AddEntry(SMH,"SM 125 GeV Higgs","F");
-    l->AddEntry(ttbar,"t#bar{t}","F");
+    l->AddEntry(ttbar,"t#bar{t} fake","F");
+    l->AddEntry(ttbarT,"t#bar{t} true","F");
     l->AddEntry(errorBand, "bkg. uncertainty" , "F" );
 
 
