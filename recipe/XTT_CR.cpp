@@ -486,6 +486,7 @@ int main(int argc, char** argv) {
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
     bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotWControlRegion), cb);
+
     //bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotControlRegion), cb);
     //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
     //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
