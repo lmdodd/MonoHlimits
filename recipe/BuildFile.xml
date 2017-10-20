@@ -1,7 +1,6 @@
 <bin file="XTT.cpp" name="XTT"></bin>
 <bin file="XTT_CR.cpp" name="XTT_CR"></bin>
-<bin file="XTT_SS.cpp" name="XTT_SS"></bin>
-<bin file="XTT_LowMt.cpp" name="XTT_LowMt"></bin>
+<bin file="HTT_ZH.cpp" name="HTT_ZH"></bin>
 <bin file="Example1.cpp" name="Example1"></bin>
 <bin file="Example2.cpp" name="Example2"></bin>
 <bin file="Example3.cpp" name="Example3"></bin>

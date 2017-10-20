@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     string signalMass="";
     string model="Zprime";
     int control_region = 1;
-    int do1Bin = 0;
+    int dobbb = 1;
 
 
     VString masses;
@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
         ("mass,m", po::value<string>(&mass)->default_value(mass))
         ("signalMass", po::value<string>(&signalMass)->default_value(signalMass))
         ("control_region", po::value<int>(&control_region)->default_value(1))
-        ("do1Bin", po::value<int>(&do1Bin)->default_value(0))
+        ("dobbb", po::value<int>(&dobbb)->default_value(1))
         ("model", po::value<string>(&model)->default_value(model));
     po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
     po::notify(vm);
@@ -459,38 +459,30 @@ int main(int argc, char** argv) {
     }
     }*/
 
-    if (do1Bin){
-        //Now works!
-        //cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(To1Bin<ch::Process>);
-        //cb.cp().FilterAll(BinIsNotControlRegion).ForEachObs(To1Bin<ch::Observation>);
+    if (dobbb){
 
-        cb.cp().FilterAll(BinIsNotControlRegion).ForEachProc(MergeBins<ch::Process>);
-        cb.cp().FilterAll(BinIsNotControlRegion).ForEachObs(MergeBins<ch::Observation>);
-    }
 
     //! [part8]
     auto bbb = ch::BinByBinFactory()
-    .SetAddThreshold(0.05) //0.1
-    //.SetMergeThreshold(0.8) //0.5
-    .SetFixNorm(false)
-    .SetVerbosity(1);
+        .SetAddThreshold(0.05) //0.1
+        //.SetMergeThreshold(0.8) //0.5
+        .SetFixNorm(false)
+        .SetVerbosity(1);
     //bbb.MergeBinErrors(cb.cp().backgrounds().FilterProcs(BinIsControlRegion));
     bbb.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsControlRegion), cb);
 
     auto bbb_ctl = ch::BinByBinFactory()
         .SetPattern("CMS_$ANALYSIS_$BIN_$ERA_$PROCESS_bin_$#")
-        .SetAddThreshold(0.1)
+        .SetAddThreshold(0.10)
         //.SetMergeThreshold(0.5)
         .SetFixNorm(false)  // contrary to signal region, bbb *should* change yield here?
         //.SetFixNorm(true)  // contrary to signal region, bbb *should* change yield here?
         .SetVerbosity(1);
     // Will merge but only for non W and QCD processes, to be on the safe side
     bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotWControlRegion), cb);
-
-    //bbb_ctl.AddBinByBin(cb.cp().backgrounds().FilterProcs(BinIsNotControlRegion), cb);
-    //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
     //bbb_ctl.MergeBinErrors(cb.cp().process({"QCD", "W"}, false).FilterProcs(BinIsNotControlRegion));
     cout << " done\n";
+    }
     // This function modifies every entry to have a standardised bin name of
     // the form: {analysis}_{channel}_{bin_id}_{era}
     // which is commonly used in the xtt analyses
