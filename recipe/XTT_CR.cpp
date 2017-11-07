@@ -270,12 +270,12 @@ int main(int argc, char** argv) {
 
 
     // Electron and muon efficiencies
-    //cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
-    cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","SMH"}}))
-        .AddSyst(cb, "CMS_eff_m_$ERA", "lnN", SystMap<>::init(1.02));
-    //cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
-    cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","SMH"}}))
-        .AddSyst(cb, "CMS_eff_e_$ERA", "lnN", SystMap<>::init(1.02));
+    cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    //cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","SMH"}}))
+        .AddSyst(cb, "CMS_eff_m_$ERA", "lnN", SystMap<>::init(1.03));
+    cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    //cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","SMH"}}))
+        .AddSyst(cb, "CMS_eff_e_$ERA", "lnN", SystMap<>::init(1.03));
 
     // mt 
     cb.cp().channel({"et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
@@ -390,8 +390,10 @@ int main(int argc, char** argv) {
 
 
 
-        cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr","mt_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
-        cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr","et_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+        //cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr","mt_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
+        //cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr","et_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
+        cb.cp().bin({"mt_inclusive","mt_QCD_inclusive_cr","mt_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive", "rateParam", SystMap<>::init(1.0));
+        cb.cp().bin({"et_inclusive","et_QCD_inclusive_cr","et_W_inclusive_cr"}).process({"W"}).AddSyst(cb, "rate_W_cr_inclusive", "rateParam", SystMap<>::init(1.0));
 
         cb.cp().bin({"mt_inclusive","mt_W_inclusive_cr","mt_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_mt", "rateParam", SystMap<>::init(1.0));
         cb.cp().bin({"et_inclusive","et_W_inclusive_cr","et_QCD_inclusive_cr"}).process({"QCD"}).AddSyst(cb, "rate_QCD_cr_inclusive_et", "rateParam", SystMap<>::init(1.0));
