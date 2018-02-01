@@ -160,7 +160,7 @@ def SetTDRStyle():
     R.gStyle.SetHatchesSpacing(0.05)
 
 
-def ModTDRStyle(width=1800, height=1800, t=0.06, b=0.12, l=0.16, r=0.04):
+def ModTDRStyle(width=2500, height=1800, t=0.06, b=0.12, l=0.16, r=0.15):
     """Modified version of the tdrStyle
 
     Args:
