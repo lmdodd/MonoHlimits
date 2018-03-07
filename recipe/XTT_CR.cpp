@@ -153,10 +153,10 @@ int main(int argc, char** argv) {
     // ch::Categories is just a typedef of vector<pair<int, string>>
     //! [part1]
     map<string, VString> bkg_procs;
-    bkg_procs["et"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH","ZL","ZJ"};
-    bkg_procs["mt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH","ZL","ZJ"};
-    bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","ZVV","SMH"};
-    //bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","SMH"};
+    bkg_procs["et"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","GGH","VBFH","VH","Hother","ZL","ZJ"};
+    bkg_procs["mt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","GGH","VBFH","VH","Hother","ZL","ZJ"};
+    bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","ZVV","GGH","VBFH","VH","Hother"};
+    //bkg_procs["tt"] = {"ZTT", "W", "QCD", "TTT","TTJ", "VVT","VVJ","GGH","VBFH","VH","Hother"};
 
     map<string, Categories> cats;
     cats["et"] = {
@@ -240,23 +240,22 @@ int main(int argc, char** argv) {
     cb.cp().process(sig_procs)
         .AddSyst(cb, "CMS_PDF", "lnN", SystMap<>::init(1.02)); 
 
-    cb.cp().process(ch::JoinStr({sig_procs,{"SMH"}}))
+    cb.cp().process(ch::JoinStr({sig_procs,{"GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb,"BR_htt_THU", "lnN", SystMap<>::init(1.017));
     //cb.cp().process(ch::JoinStr({sig_procs,{"SMH"}))
     //    AddSyst(cb,"BR_htt_PU_mq", "lnN", SystMap<>::init(1.0099));
     //cb.cp().process(ch::JoinStr({sig_procs,{"SMH"}))
     //    AddSyst(cb,"BR_htt_PU_alphas", "lnN", SystMap<>::init(1.0062));
 
-
-    cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","SMH"} }))
+    cb.cp().process(ch::JoinStr({sig_procs,{"ZTT", "ZL", "ZJ", "TTT","TTJ", "VVJ","VVT","ZVV","GGH","VBFH","VH","Hother"} }))
         .AddSyst(cb, "CMS_lumi", "lnN", SystMap<>::init(1.025));
 
-    //TES correlate
-    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","SMH","TTT"}}))
+    //TES uncorrelated for now.. potentially correlate
+    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","GGH","VBFH","VH","Hother","TTT"}}))
         .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","SMH","TTT"}}))
+    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","GGH","VBFH","VH","Hother","TTT"}}))
         .AddSyst(cb, "CMS_scale_t_1prong1pizero_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","SMH","TTT"}}))
+    cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","GGH","VBFH","VH","Hother","TTT"}}))
         .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(1.00));
 
     //cb.cp().channel({"tt","et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT","VVT","SMH","TTT"}}))
@@ -267,27 +266,27 @@ int main(int argc, char** argv) {
     cb.cp().channel({"tt"}).process(ch::JoinStr({{"ZTT","TTT"}}))
         .AddSyst(cb, "CMS_xtt_tt_trigger_$ERA", "shape", SystMap<>::init(0.4));
 
-    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV"}}))
+    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother","ZVV"}}))
         .AddSyst(cb, "CMS_scale_m_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp().channel({"mt","et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    cb.cp().channel({"mt","et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_scale_m_$ERA", "shape", SystMap<>::init(1.00));
 
-    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH","ZVV"}}))
+    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother","ZVV"}}))
         .AddSyst(cb, "CMS_scale_j_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp().channel({"mt","et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    cb.cp().channel({"mt","et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_scale_j_$ERA", "shape", SystMap<>::init(1.00));
 
 
     // Electron and muon efficiencies
-    cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    cb.cp().channel({"mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_eff_m_$ERA", "lnN", SystMap<>::init(1.02));
-    cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","SMH"}}))
+    cb.cp().channel({"et"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT","TTJ", "VVT", "VVJ", "ZL", "ZJ","W","GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_eff_e_$ERA", "lnN", SystMap<>::init(1.02));
 
     // mt 
-    cb.cp().channel({"et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
+    cb.cp().channel({"et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_eff_t_$ERA", "lnN", SystMap<>::init(1.045));
-    cb.cp().channel({"et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
+    cb.cp().channel({"et","mt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
 
@@ -296,7 +295,7 @@ int main(int argc, char** argv) {
     cb.cp().channel({"et","mt","tt"}).process(ch::JoinStr({ {"TTJ", "VVJ", "ZL", "ZJ","ZVV"}}))
         .AddSyst(cb, "CMS_fake_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
-    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "SMH"}}))
+    cb.cp().channel({"tt"}).process(ch::JoinStr({sig_procs, {"ZTT", "TTT", "VVT", "GGH","VBFH","VH","Hother"}}))
         .AddSyst(cb, "CMS_eff_t_tt_$ERA", "lnN", SystMap<>::init(1.09));
 
     //Drell Yan  uncertainties
@@ -309,6 +308,29 @@ int main(int argc, char** argv) {
             "CMS_xtt_eFakeTau_13TeV", "lnN", SystMap<>::init(1.12));
     cb.cp().process({"ZL"}).channel({"mt"}).AddSyst(cb,
             "CMS_xtt_mFakeTau_13TeV", "lnN", SystMap<>::init(1.25));
+    
+    //SM Higgs uncertainties
+    cb.cp().process({"GGH"}).AddSyst(cb,
+            "h_pdf_theo", "lnN", SystMap<>::init(1.039));
+    cb.cp().process({"VBFH"}).AddSyst(cb,
+            "h_pdf_theo", "lnN", SystMap<>::init(1.021));
+    cb.cp().process({"VH"}).AddSyst(cb,
+            "h_pdf_theo", "lnN", SystMap<>::init(1.025));
+    cb.cp().process({"Hother"}).AddSyst(cb,
+            "h_pdf_theo", "lnN", SystMap<>::init(1.036));
+    
+    cb.cp().process({"GGH"}).AddSyst(cb,
+            "h_scale_theo", "lnN", SystMap<>::init(1.046));
+    cb.cp().process({"VBFH"}).AddSyst(cb,
+            "h_scale_theo", "lnN", SystMap<>::init(1.004));
+    cb.cp().process({"VH"}).AddSyst(cb,
+            "h_scale_theo", "lnN", SystMap<>::init(1.038));
+    cb.cp().process({"Hother"}).AddSyst(cb,
+            "h_scale_theo", "lnN", SystMap<>::init(1.058));
+    
+    cb.cp().process({"GGH"}).AddSyst(cb,
+            "h_xsec_theo", "lnN", SystMap<>::init(1.20));
+    
     // mu to tau FR
     //STUPID UNCERTAINTY 
     //cb.cp().process( {"ZL"}).channel({"mt"}).AddSyst(cb,
@@ -324,7 +346,7 @@ int main(int argc, char** argv) {
             "CMS_xtt_jetToTauFake_$ERA", "shape", SystMap<>::init(1.00));
 
     //Fake Tau Uncertainties
-    cb.cp().process({"ZTT","VVT","SMH","TTT"}).channel({"tt","mt","et"}).AddSyst(cb,
+    cb.cp().process({"ZTT","VVT","GGH","VBFH","VH","Hother","TTT"}).channel({"tt","mt","et"}).AddSyst(cb,
             "CMS_xtt_highTauEffi_$ERA", "shape", SystMap<>::init(1.00));
 
 
@@ -355,7 +377,7 @@ int main(int argc, char** argv) {
         .AddSyst(cb, "CMS_norm_btag", "lnN", SystMap<>::init(1.02));
     cb.cp().process(sig_procs) //QCD and W were here
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.02));
-    cb.cp().process({"SMH","ZTT","ZL", "ZJ","ZVV"})
+    cb.cp().process({"GGH","VBFH","VH","Hother","ZTT","ZL", "ZJ","ZVV"})
         .AddSyst(cb, "CMS_norm_mistag", "lnN", SystMap<>::init(1.05));
 
     // TTBAR   - fully correlated
@@ -436,48 +458,6 @@ int main(int argc, char** argv) {
     }
     cout << ">> Scaling signal process rates...\n";
     map<string, TGraph> xs;
-
-    /*
-    if (model=="Zprime"){ //Do not scale baryonci yet 
-        for (string const& p : sig_procs) {
-            // Get the table of xsecs vs mass for process "p" and era "e":
-            cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
-            cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
-                    std::string mass = proc->mass(); 
-                    int n = std::stoi(signalMass);
-                    int m = std::stoi(mass);
-                    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
-                    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "mA", "br");
-                    proc->set_rate(proc->rate() * xs["xtt"+mass].Eval(m));
-                    cout << ">>>> Scaling for model " << model << "with mass "<<mass<<" and Signal mass "<<n<< "\n";
-                    cout << ">>>> Scaling is "<< xs["xtt"+mass].Eval(m)<< "\n";
-                    });
-        }
-    }
-    else if (model=="Baryonic"){ //Do not scale baryonci yet 
-        for (string const& p : sig_procs) {
-            // Get the table of xsecs vs mass for process "p" and era "e":
-            cout << ">>>> Scaling for process " << p << "and signalMass " << signalMass <<" \n";
-            cb.cp().process({p}).ForEachProc([&](ch::Process *proc) {
-                    std::string mass = proc->mass(); 
-                    int n = std::stoi(signalMass);
-                    int m = std::stoi(mass);
-                    cout << ">>>> Scaling for process " << p << "with mass "<<mass<<" \n";
-                    xs["xtt"+mass] = ch::TGraphFromTable(input_dir+"/xsecs_brs/"+model+"/xtt_monoH_"+signalMass+".txt", "MDM", "BR");
-                    //proc->set_rate(1000000000000*proc->rate() * xs["xtt"+mass].Eval(m));
-                    cout << ">>>> Scaling for model " << model << "with mass "<<m<<" and Signal mass "<<n<< "\n";
-                    //cout << ">>>> Scaling is "<< 1000000000000*xs["xtt"+mass].Eval(m)<< "\n";
-                    //if ((xs["xtt"+mass]).Eval(m)<0.000001){ 
-                    //proc->set_rate(proc->rate() * pow(5.0,5.0)*xs["xtt"+mass].Eval(m));
-                    // }
-                    //else {
-                    //proc->set_rate(proc->rate() * 10000 * xs["xtt"+mass].Eval(m));
-                   // }
-                    });
-        }
-    }
-    */
-
     if (dobbb){
 
 
